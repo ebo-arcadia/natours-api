@@ -2,6 +2,7 @@ const express = require('express');
 const fileSys = require('fs');
 
 const app = express();
+app.use(express.json());
 
 const tours = JSON.parse(fileSys.readFileSync(`${__dirname}/data/tours.json`));
 
@@ -21,6 +22,26 @@ app.get('/api/v1/tours', (request, response) => {
       tours,
     },
   });
+});
+
+app.post('/api/v1/tours', (request, response) => {
+  const newTourId = tours[tours.length - 1].id + 1;
+  const newTour = Object.assign({ id: newTourId }, request.body);
+
+  tours.push(newTour);
+
+  fileSys.writeFile(
+    `${__dirname}/data/tours.json`,
+    JSON.stringify(tours),
+    () => {
+      response.status(201).json({
+        status: 'success',
+        data: {
+          tour: newTour,
+        },
+      });
+    }
+  );
 });
 
 port = 3001;
