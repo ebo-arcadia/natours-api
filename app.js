@@ -60,6 +60,21 @@ app.post('/api/v1/tours', (request, response) => {
   );
 });
 
+app.patch('/api/v1/tours/:id', (request, response) => {
+  if (request.params.id * 1 > tours.length) {
+    return response.status(404).json({
+      status: 'fail',
+      message: 'invalid tour ID',
+    });
+  }
+  response.status(200).json({
+    status: 'patch success',
+    data: {
+      tour: 'tour is updated...',
+    },
+  });
+});
+
 port = 3001;
 app.listen(port, () => {
   console.info(`server is listening on ${port}`);
