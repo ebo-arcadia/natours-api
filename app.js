@@ -1,19 +1,38 @@
 const express = require('express');
 const fileSys = require('fs');
+const morgan = require('morgan');
+const responseTime = require('response-time');
+const StatsD = require('node-statsd');
 
 const app = express();
+let stats = new StatsD();
+
+stats.socket.on('error', function (error) {
+  console.error(error.stack);
+});
 // middleware
 // can only be invoked during the request & response lifecycle
+app.use(responseTime());
+app.use(morgan('combined'));
 app.use(express.json());
 app.use((request, response, next) => {
   request.requestedAt = new Date().toISOString();
   next();
 });
+app.use(
+  responseTime(function (req, res, time) {
+    var stat = (req.method + req.url)
+      .toLowerCase()
+      .replace(/[:.]/g, '')
+      .replace(/\//g, '_');
+    stats.timing(stat, time);
+  })
+);
 
 const tours = JSON.parse(fileSys.readFileSync(`${__dirname}/data/tours.json`));
 
+// route header
 const getAllTours = (request, response) => {
-  console.info(request.requestedAt);
   response.status(200).json({
     status: 'success',
     requestedAt: request.requestedAt,
@@ -84,6 +103,7 @@ const deleteTour = (request, response) => {
   });
 };
 
+// routes
 // app.get('/api/v1/tours', getAllTours);
 // app.get('/api/v1/tours/:id', getTourById);
 // app.post('/api/v1/tours', createATour);
@@ -97,6 +117,7 @@ app
   .patch(updateTour)
   .delete(deleteTour);
 
+// server
 port = 3001;
 app.listen(port, () => {
   console.info(`server is listening on ${port}`);
