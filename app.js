@@ -102,13 +102,38 @@ const deleteTour = (request, response) => {
     data: null,
   });
 };
+const getAllUsers = (request, response) => {
+  response.status(200).json({
+    status: 'success',
+    data: null,
+  });
+};
+const createUser = (request, response) => {
+  response.status(200).json({
+    status: 'success',
+    data: null,
+  });
+};
+const getUser = (request, response) => {
+  response.status(200).json({
+    status: 'success',
+    data: null,
+  });
+};
+const updateUser = (request, response) => {
+  response.status(200).json({
+    status: 'success',
+    data: null,
+  });
+};
+const deleteUser = (request, response) => {
+  response.status(200).json({
+    status: 'success',
+    data: null,
+  });
+};
 
 // routes
-// app.get('/api/v1/tours', getAllTours);
-// app.get('/api/v1/tours/:id', getTourById);
-// app.post('/api/v1/tours', createATour);
-// app.patch('/api/v1/tours/:id', updateTour);
-// app.delete('/api/v1/tours/:id', deleteTour);
 
 app.route('/api/v1/tours').get(getAllTours).post(createATour);
 app
@@ -116,6 +141,13 @@ app
   .get(getTourById)
   .patch(updateTour)
   .delete(deleteTour);
+
+app.route('/api/v1/users').get(getAllUsers).post(createUser);
+app
+  .route('/api/v1/users/:id')
+  .get(getUser)
+  .patch(updateUser)
+  .delete(deleteUser);
 
 // server
 port = 3001;
