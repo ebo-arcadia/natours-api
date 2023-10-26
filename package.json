@@ -4,6 +4,7 @@
   "description": " simple app made with node js, express, mongodb",
   "main": "app.js",
   "scripts": {
+    "start": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "ebo arcadia",
