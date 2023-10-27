@@ -17,6 +17,8 @@ stats.socket.on('error', function (error) {
 app.use(responseTime());
 app.use(morgan('combined'));
 app.use(express.json());
+app.use(express.static(`${__dirname}/public`));
+
 app.use((request, response, next) => {
   request.requestedAt = new Date().toISOString();
   next();
