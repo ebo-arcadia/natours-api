@@ -15,7 +15,10 @@ stats.socket.on('error', function (error) {
 // middleware
 // can only be invoked during the request & response lifecycle
 app.use(responseTime());
-app.use(morgan('combined'));
+console.info('current env:', process.env.NODE_ENV);
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('combined'));
+}
 app.use(express.json());
 app.use(express.static(`${__dirname}/public`));
 
