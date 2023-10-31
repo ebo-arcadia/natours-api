@@ -33,7 +33,7 @@ app.use(
       .replace(/[:.]/g, '')
       .replace(/\//g, '_');
     stats.timing(stat, time);
-  })
+  }),
 );
 
 // use router as middleware
