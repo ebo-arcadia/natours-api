@@ -7,9 +7,9 @@ const tourRouter = require('./routes/tourRouters');
 const userRouter = require('./routes/userRouters');
 
 const app = express();
-let stats = new StatsD();
+const stats = new StatsD();
 
-stats.socket.on('error', function (error) {
+stats.socket.on('error', (error) => {
   console.error(error.stack);
 });
 // middleware
