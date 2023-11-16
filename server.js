@@ -13,8 +13,7 @@ mongoose
     useCreateIndex: true,
     useFindAndModify: false,
   })
-  .then((connection) => {
-    console.info(connection.connections);
+  .then(() => {
     console.info('DB connected successfully');
   });
 
@@ -37,6 +36,21 @@ const tourSchema = new mongoose.Schema({
 });
 
 const Tour = mongoose.model('Tour', tourSchema);
+
+const tourObj = new Tour({
+  name: 'Moscow',
+  rating: 2.1,
+  price: 180,
+});
+
+tourObj
+  .save()
+  .then((doc) => {
+    console.info(doc);
+  })
+  .catch((err) => {
+    console.warn('error😾', err);
+  });
 
 const port = process.env.PORT || 3001;
 app.listen(port, () => {
