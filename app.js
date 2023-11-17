@@ -28,7 +28,7 @@ app.use((request, response, next) => {
 });
 app.use(
   responseTime(function (req, res, time) {
-    var stat = (req.method + req.url)
+    const stat = (req.method + req.url)
       .toLowerCase()
       .replace(/[:.]/g, '')
       .replace(/\//g, '_');
