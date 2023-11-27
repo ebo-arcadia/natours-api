@@ -1,15 +1,5 @@
 const Tour = require('../models/tourModel');
 
-exports.checkDataBody = (request, response, next) => {
-  if (!request.body.name || !request.body.price) {
-    return response.status(400).json({
-      status: 'fail',
-      message: 'name and price property are missing',
-    });
-  }
-  next();
-};
-
 exports.getAllTours = (request, response) => {
   response.status(200).json({
     status: 'success',
@@ -36,13 +26,22 @@ exports.getTourById = (request, response) => {
     },
   });
 };
-exports.createATour = (request, response) => {
-  response.status(201).json({
-    status: 'success',
-    data: {
-      tour: newTour,
-    },
-  });
+
+exports.createATour = async (req, res) => {
+  try {
+    const newTour = await Tour.create(req.body);
+    res.status(201).json({
+      status: 'success',
+      data: {
+        tour: newTour,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'failed to create a new tour',
+      message: err,
+    });
+  }
 };
 
 exports.updateTour = (request, response) => {
