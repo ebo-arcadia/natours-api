@@ -53,17 +53,38 @@ exports.createATour = async (req, res) => {
   }
 };
 
-exports.updateTour = (request, response) => {
-  response.status(200).json({
-    status: 'patch success',
-    data: {
-      tour: 'tour is updated...',
-    },
-  });
+exports.updateTour = async (req, res) => {
+  try {
+    const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      upsert: true,
+      runValidators: true,
+    });
+    res.status(200).json({
+      status: 'patch success',
+      data: {
+        tour,
+      },
+    });
+  } catch (error) {
+    res.status(404).json({
+      status: 'failed',
+      message: error,
+    });
+  }
 };
-exports.deleteTour = (request, response) => {
-  response.status(204).json({
-    status: 'delete success',
-    data: null,
-  });
+
+exports.deleteTour = async (req, res) => {
+  try {
+    await Tour.findByIdAndDelete(req.params.id);
+    res.status(204).json({
+      status: 'this tour is now deleted',
+      data: null,
+    });
+  } catch (error) {
+    res.status(404).json({
+      status: 'failed',
+      message: error,
+    });
+  }
 };
