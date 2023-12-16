@@ -1,6 +1,9 @@
 {
   "name": "natours-api",
   "version": "1.0.0",
+  "engines": {
+    "node": ">=8.0.0"
+  },
   "description": " simple app made with node js, express, mongodb",
   "main": "app.js",
   "scripts": {
