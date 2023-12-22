@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const slugify = require('slugify');
 
 const tourSchema = new mongoose.Schema(
   {
@@ -7,11 +8,7 @@ const tourSchema = new mongoose.Schema(
       required: [true, 'A tour must have a name'],
       unique: true,
       trim: true,
-      maxlength: [40, 'A tour name must have less or equal then 40 characters'],
-      minlength: [10, 'A tour name must have more or equal then 10 characters'],
-      // validate: [validator.isAlpha, 'Tour name must only contain characters']
     },
-    slug: String,
     duration: {
       type: Number,
       required: [true, 'A tour must have a duration'],
@@ -23,10 +20,6 @@ const tourSchema = new mongoose.Schema(
     difficulty: {
       type: String,
       required: [true, 'A tour must have a difficulty'],
-      enum: {
-        values: ['easy', 'medium', 'difficult'],
-        message: 'Difficulty is either: easy, medium, difficult',
-      },
     },
     ratingsAverage: {
       type: Number,
@@ -48,7 +41,6 @@ const tourSchema = new mongoose.Schema(
     summary: {
       type: String,
       trim: true,
-      required: [true, 'A tour must have a description'],
     },
     description: {
       type: String,
@@ -69,12 +61,29 @@ const tourSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    slug: String,
   },
   { toJSON: { virtuals: true }, toObject: { virtuals: true } },
 );
 
 tourSchema.virtual('durationWeeks').get(function callback() {
   return this.duration / 7;
+});
+
+tourSchema.pre('save', function callback(next) {
+  this.slug = slugify(this.name, { lower: true });
+  next();
+});
+
+tourSchema.pre('save', function callback(next) {
+  console.info('new tour is staged.');
+  next();
+});
+
+tourSchema.post('save', function callback(doc, next) {
+  console.info(doc);
+  console.info('tour persisted in DB success');
+  next();
 });
 
 const Tour = mongoose.model('Tour', tourSchema);
