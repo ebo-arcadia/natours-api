@@ -99,7 +99,13 @@ tourSchema.pre(/^find/, function callback(next) {
 
 tourSchema.post(/^find/, function callback(doc, next) {
   console.info(`query took ${Date.now() - this.start} milliseconds...`);
-  console.info(doc);
+  next();
+});
+
+// aggregation middleware
+tourSchema.pre('aggregate', function callback(next) {
+  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+  console.info(this.pipeline());
   next();
 });
 
