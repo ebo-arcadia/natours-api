@@ -57,19 +57,23 @@ const tourSchema = new mongoose.Schema(
       select: false,
     },
     startDates: [Date],
+    slug: String,
     secretTour: {
       type: Boolean,
       default: false,
     },
-    slug: String,
   },
   { toJSON: { virtuals: true }, toObject: { virtuals: true } },
 );
 
+// using virtual property to save space in DB
+// useful when property can be easily converted by another
+// virtual property is not saved in DB schema
 tourSchema.virtual('durationWeeks').get(function callback() {
   return this.duration / 7;
 });
 
+// document middleware using pre hook to process query before persisting
 tourSchema.pre('save', function callback(next) {
   this.slug = slugify(this.name, { lower: true });
   next();
@@ -83,6 +87,19 @@ tourSchema.pre('save', function callback(next) {
 tourSchema.post('save', function callback(doc, next) {
   console.info(doc);
   console.info('tour persisted in DB success');
+  next();
+});
+
+// query middleware to modify query before query is sent to DB
+tourSchema.pre(/^find/, function callback(next) {
+  this.find({ secretTour: { $ne: true } });
+  this.start = Date.now();
+  next();
+});
+
+tourSchema.post(/^find/, function callback(doc, next) {
+  console.info(`query took ${Date.now() - this.start} milliseconds...`);
+  console.info(doc);
   next();
 });
 
