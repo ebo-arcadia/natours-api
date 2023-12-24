@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
+const validator = require('validator');
 
 const tourSchema = new mongoose.Schema(
   {
@@ -51,6 +52,12 @@ const tourSchema = new mongoose.Schema(
     },
     priceDiscount: {
       type: Number,
+      validate: {
+        validator: function (value) {
+          return value < this.price;
+        },
+        message: 'discount ({VALUE}) can not be greater than the full price.',
+      },
     },
     summary: {
       type: String,
@@ -69,8 +76,12 @@ const tourSchema = new mongoose.Schema(
       type: Date,
       default: Date.now(),
       select: false,
+      validate: [validator.isDate, 'created at must be a date type'],
     },
-    startDates: [Date],
+    startDates: {
+      type: Date,
+      validate: [validator.isDate, 'start date must be a date type'],
+    },
     slug: String,
     secretTour: {
       type: Boolean,
