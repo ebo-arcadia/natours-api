@@ -1,6 +1,7 @@
 const Tour = require('../models/tourModel');
 const TourAPI = require('../utilities/tourAPI');
 const catchAsync = require('../utilities/catchAsync');
+const AppError = require('../utilities/tourError');
 
 // get top 5 tour middleware
 exports.aliasTopTours = (req, res, next) => {
@@ -30,6 +31,9 @@ exports.getAllTours = catchAsync(async (req, res, next) => {
 
 exports.getTourById = catchAsync(async (req, res, next) => {
   const tour = await Tour.findById(req.params.id);
+  if (!tour) {
+    return next(new AppError('no tour is found with the given id', 404));
+  }
   res.status(200).json({
     status: 'success',
     data: {
@@ -54,6 +58,9 @@ exports.updateTour = catchAsync(async (req, res, next) => {
     upsert: true,
     runValidators: true,
   });
+  if (!tour) {
+    return next(new AppError('no tour is found with the given id', 404));
+  }
   res.status(200).json({
     status: 'patch success',
     data: {
@@ -63,7 +70,10 @@ exports.updateTour = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteTour = catchAsync(async (req, res, next) => {
-  await Tour.findByIdAndDelete(req.params.id);
+  const tour = await Tour.findByIdAndDelete(req.params.id);
+  if (!tour) {
+    return next(new AppError('no tour is found with the given id', 404));
+  }
   res.status(204).json({
     status: 'this tour is now deleted',
     data: null,
