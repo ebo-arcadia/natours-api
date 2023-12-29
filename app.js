@@ -3,7 +3,7 @@ const morgan = require('morgan');
 const responseTime = require('response-time');
 const StatsD = require('node-statsd');
 
-const AppError = require('./utilities/tourError');
+const TourError = require('./utilities/tourError');
 const globalErrorHandler = require('./controllers/errorController');
 const tourRouter = require('./routes/tourRouters');
 const userRouter = require('./routes/userRouters');
@@ -42,7 +42,7 @@ app.use(
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.all('*', (req, res, next) => {
-  next(new AppError(`endpoint ${req.originalUrl} does not exist.`, 404));
+  next(new TourError(`endpoint ${req.originalUrl} does not exist.`, 404));
 });
 app.use(globalErrorHandler);
 
