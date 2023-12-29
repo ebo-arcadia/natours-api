@@ -9,7 +9,7 @@ const tourSchema = new mongoose.Schema(
       required: [true, 'A tour must have a name'],
       unique: true,
       trim: true,
-      maxlength: [30, 'a tour name can only have less than 30 characters'],
+      maxlength: [50, 'a tour name can only have less than 50 characters'],
       minlength: [5, 'a tour name must contain at least 5 characters'],
     },
     duration: {

@@ -5,6 +5,18 @@ const handleCastErrorDB = (err) => {
   return new TourError(msg, 400);
 };
 
+const handleDuplicateFieldsDB = (err) => {
+  const value = err.keyValue.name;
+  const message = `Duplicate field value: ${value}`;
+  return new TourError(message, 400);
+};
+
+const handleValidationErrorDB = (err) => {
+  const errors = Object.values(err.errors).map((el) => el.message);
+  const msg = `Validation errors: ${errors.join('. ')}`;
+  return new TourError(msg, 400);
+};
+
 const sendErrDev = (err, res) => {
   res.status(err.statusCode).json({
     status: err.status,
@@ -21,10 +33,10 @@ const sendErrProd = (err, res) => {
       message: err.message,
     });
   } else {
-    console.error('Error!😾', err);
+    console.error('Non-operational Error!😾', err);
     res.status(500).json({
       status: 'error',
-      message: 'unexpected error',
+      message: 'unexpected error in production',
     });
   }
 };
@@ -38,6 +50,9 @@ module.exports = (err, req, res, next) => {
   } else if (process.env.NODE_ENV === 'production') {
     let error = { ...err };
     if (error.name === 'CastError') error = handleCastErrorDB(error);
+    if (error.code === 11000) error = handleDuplicateFieldsDB(error);
+    if (error.name === 'ValidationError')
+      error = handleValidationErrorDB(error);
     sendErrProd(error, res);
   }
 };
