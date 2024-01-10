@@ -23,6 +23,12 @@ const userSchema = new mongoose.Schema({
   passwordConfirm: {
     type: String,
     required: [true, 'confirm email'],
+    validate: {
+      validator: function (item) {
+        return item === this.password;
+      },
+      message: 'password must match',
+    },
   },
 });
 

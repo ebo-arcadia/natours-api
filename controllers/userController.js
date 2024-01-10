@@ -1,7 +1,9 @@
 const fileSys = require('fs');
+const User = require('../models/userModel');
+const catchAsync = require('../utilities/catchAsync');
 
 const users = JSON.parse(
-  fileSys.readFileSync(`${__dirname}/../data/users.json`)
+  fileSys.readFileSync(`${__dirname}/../data/users.json`),
 );
 
 exports.checkID = (request, response, next, value) => {
@@ -21,12 +23,17 @@ exports.getAllUsers = (request, response) => {
     data: null,
   });
 };
-exports.createUser = (request, response) => {
-  response.status(200).json({
-    status: 'create a user success',
-    data: null,
+
+exports.createUser = catchAsync(async (req, res, next) => {
+  const newUser = await User.create(req.body);
+  res.status(201).json({
+    status: 'success',
+    data: {
+      tour: newUser,
+    },
   });
-};
+});
+
 exports.getUser = (request, response) => {
   response.status(200).json({
     status: 'get a user success',
