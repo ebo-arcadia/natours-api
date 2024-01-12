@@ -24,10 +24,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, 'confirm email'],
     validate: {
-      validator: function (item) {
-        return item === this.password;
+      // This only works on CREATE and SAVE!!!
+      validator: function (el) {
+        return el === this.password;
       },
-      message: 'password must match',
+      message: 'Passwords are not the same!',
     },
   },
 });
