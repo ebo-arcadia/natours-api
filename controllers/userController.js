@@ -1,6 +1,7 @@
 const fileSys = require('fs');
 const User = require('../models/userModel');
 const catchAsync = require('../utilities/catchAsync');
+const jwt = require('jsonwebtoken');
 
 const users = JSON.parse(
   fileSys.readFileSync(`${__dirname}/../data/users.json`),
@@ -25,7 +26,12 @@ exports.getAllUsers = (request, response) => {
 };
 
 exports.createUser = catchAsync(async (req, res, next) => {
-  const newUser = await User.create(req.body);
+  const newUser = await User.create({
+    name: req.body.name,
+    email: req.body.email,
+    password: req.body.password,
+    passwordConfirm: req.body.passwordConfirm,
+  });
   res.status(201).json({
     status: 'success',
     data: {
