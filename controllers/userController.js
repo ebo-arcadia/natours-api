@@ -18,12 +18,16 @@ exports.checkID = (request, response, next, value) => {
   next();
 };
 
-exports.getAllUsers = (request, response) => {
-  response.status(200).json({
+exports.getAllUsers = catchAsync(async (req, res, next) => {
+  const allUsers = await User.find();
+
+  res.status(200).json({
     status: 'get all users success',
-    data: null,
+    data: {
+      allUsers,
+    },
   });
-};
+});
 
 exports.createUser = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
