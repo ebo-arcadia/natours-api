@@ -41,3 +41,23 @@ exports.login = catchAsync(async (req, res, next) => {
     token,
   });
 });
+
+exports.protect = catchAsync(async (req, res, next) => {
+  // getting the token and check if it is there
+  let jWTtoken;
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer')
+  ) {
+    jWTtoken = req.headers.authorization.split(' ')[1];
+  }
+  // verify if token is valid
+  if (!jWTtoken) {
+    return next(new AppError('Invalid token. unauthorized login'), 401);
+  }
+  // check if user still exist
+
+  // check if user changed password after token was issued
+
+  next();
+});
