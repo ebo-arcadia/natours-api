@@ -1,5 +1,7 @@
 const TourError = require('../utilities/tourError');
 
+const handleJwtError = () => new TourError('invalid jwt token', 401);
+const handleJwtExpiredError = () => new TourError('token is expired', 401);
 const handleCastErrorDB = (err) => {
   const msg = `invalid ${err.path}: ${err.value}.`;
   return new TourError(msg, 400);
@@ -53,6 +55,8 @@ module.exports = (err, req, res, next) => {
     if (error.code === 11000) error = handleDuplicateFieldsDB(error);
     if (error.name === 'ValidationError')
       error = handleValidationErrorDB(error);
+    if (error.name === 'JsonWebTokenError') error = handleJwtError();
+    if (error.name === 'TokenExpiredError') error = handleJwtExpiredError();
     sendErrProd(error, res);
   }
 };
