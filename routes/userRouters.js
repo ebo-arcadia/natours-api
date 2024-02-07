@@ -9,6 +9,9 @@ router.param('id', userController.checkID);
 router.post('/signup', authController.signup);
 router.post('/login', authController.login);
 
+router.post('/forgotPassword', authController.forgotPassword);
+router.post('/resetPassword', authController.resetPassword);
+
 router
   .route('/')
   .get(userController.getAllUsers)
