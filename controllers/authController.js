@@ -92,7 +92,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     return next(new AppError('user does not exist!', 404));
   }
   const resetToken = user.createPasswordResetToken();
-  await user.save();
+  await user.save({ validateBeforeSave: false });
 });
 
 exports.resetPassword = (req, res, next) => {};
