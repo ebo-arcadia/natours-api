@@ -26,6 +26,7 @@
     "morgan": "^1.10.0",
     "ndb": "^1.1.5",
     "node-statsd": "^0.1.1",
+    "nodemailer": "^6.9.9",
     "nodemon": "^3.0.1",
     "prettier": "^3.0.3",
     "response-time": "^2.3.2",
