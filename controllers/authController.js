@@ -93,7 +93,34 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     return next(new AppError('user does not exist!', 404));
   }
   const resetToken = user.createPasswordResetToken();
-  await user.save({ validateBeforeSave: false });
+
+  const resetURL = `${req.protocol}://${req.get(
+    'host',
+  )}/api/v1/users/resetPassword/${resetToken}`;
+
+  const message = `forget password? submit a patch request with the your new password and password confirmation to ${resetURL}`;
+
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: 'pass temp word reset token',
+      message,
+    });
+
+    res.status(200).json({
+      status: 'success',
+      message: 'token sent to the email',
+    });
+  } catch (err) {
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+    await user.save({ validateBeforeSave: false });
+
+    return next(
+      new AppError('there is an error sending pwd reset email!'),
+      500,
+    );
+  }
 });
 
 exports.resetPassword = (req, res, next) => {};
